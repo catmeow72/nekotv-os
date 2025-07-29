@@ -1,0 +1,3 @@
+[submodule "kde-builder"]
+	path = build_files/kde-builder
+	url = https://invent.kde.org/sdk/kde-builder.git

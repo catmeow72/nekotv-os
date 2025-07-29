@@ -10,7 +10,19 @@ set -ouex pipefail
 # https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
 
 # this installs a package from fedora repos
-dnf5 install -y tmux 
+dnf5 install -y git rsync sddm pipz
+pipx install pipenv
+mkdir -p /var/cache/{src,build,logs}
+
+kde-builder --install-distro-packages --install-dir /usr --source-dir /var/cache/src --build-dir /var/cache/build --persietent-data-file /var/cache/kde-builder-persistent-data.json --no-install-login-session --log-dir /var/cache/logs plasma-bigscreen aura-browser plank-player
+cp /container-data/session.desktop /usr/share/wayland-sessions/default.desktop
+useradd -mU user
+cat << EOF > /etc/sddm.conf.d/autologin.conf
+[Autologin]
+Relogin=true
+Session=default
+User=user
+EOF
 
 # Use a COPR Example:
 #

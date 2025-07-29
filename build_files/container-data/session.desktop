@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=/usr/lib/libexec/plasma-dbus-run-session-if-needed /usr/bin/plasma-bigscreen-wayland
+DesktopNames=KDE
+Name=Plasma Bigscreen (dev)
+Comment=Plasma by KDE
+X-KDE-PluginInfo-Version=6.4.80
