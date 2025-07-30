@@ -1,0 +1,23 @@
+config-version: 2
+global:
+	branch-group: kf6-qt6
+	include-dependencies true
+	install-dir: /usr
+	source-dir: /var/cache/src
+	build-dir: /var/cache/build
+	persistent-data-file: /var/cache/kde-builder-persistent-data.json
+	install-login-session: false
+	log-dir: /var/cache/log
+	cmake-options: -DPython3_FIND_VIRTUALENV=STANDARD -DPython3_FIND_UNVERSIONED_NAMES=FIRST -DCMAKE_BUILD_TYPE=RelWithDebInfo
+	num-cores: "auto"
+	num-cores-low-mem: "auto"
+	stop-on-failure: true
+	directory-layout: flat
+	cmake-generator: Ninja
+	compile-commands-linking: false
+	compile-commands-export: false
+	generate-clion-project-config: false
+	generate-vscode-project-config: false
+	generate-qtcreator-project-config: false
+	check-self-updates: false
+include ${build-configs-dir}/kde6.yaml: ""

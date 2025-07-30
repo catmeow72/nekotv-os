@@ -16,8 +16,13 @@ export PIPX_{,GLOBAL_}BIN_DIR="$PIPX_HOME/bin" PIPX_{,GLOBAL_}_MAN_DIR="$PIPX_HO
 mkdir -p "$PIPX_HOME"
 pipx install pipenv
 mkdir -p /var/cache/{src,build,logs}
-
-kde-builder --install-distro-packages --install-dir /usr --source-dir /var/cache/src --build-dir /var/cache/build --persietent-data-file /var/cache/kde-builder-persistent-data.json --no-install-login-session --log-dir /var/cache/logs plasma-bigscreen aura-browser plank-player
+kde-builder() {
+	pipenv run python /container-data/kde-builder/kde-builder "$@"
+}
+cd /container-data/kde-builder
+cp ../kde-builder.yaml "$HOME/.config/kde-builder.yaml"
+pipenv install --python /usr/bin/python3
+kde-builder --install-distro-packages plasma-bigscreen aura-browser plank-player
 cp /container-data/session.desktop /usr/share/wayland-sessions/default.desktop
 useradd -mU user
 cat << EOF > /etc/sddm.conf.d/autologin.conf
