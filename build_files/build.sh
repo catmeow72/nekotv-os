@@ -11,6 +11,9 @@ set -ouex pipefail
 
 # this installs a package from fedora repos
 dnf5 install -y git rsync sddm pipx
+export PIPX_{,GLOBAL_}HOME=/var/cache/pipx
+export PIPX_{,GLOBAL_}BIN_DIR="$PIPX_HOME/bin" PIPX_{,GLOBAL_}_MAN_DIR="$PIPX_HOME/share/man"
+mkdir -p "$PIPX_HOME"
 pipx install pipenv
 mkdir -p /var/cache/{src,build,logs}
 
