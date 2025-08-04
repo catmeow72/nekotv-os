@@ -1,9 +1,0 @@
----
-nosearch:
----
-
-# Miscellaneous
-
-```{toctree}
-changelog
-```

@@ -10,20 +10,19 @@ set -ouex pipefail
 # https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
 
 # this installs a package from fedora repos
-dnf5 install -y git rsync sddm pipx
-export PIPX_{,GLOBAL_}HOME=/var/cache/pipx
-export PIPX_{,GLOBAL_}BIN_DIR="$PIPX_HOME/bin" PIPX_{,GLOBAL_}_MAN_DIR="$PIPX_HOME/share/man"
-mkdir -p "$PIPX_HOME"
-pipx install pipenv
+dnf5 install -y git rsync sddm curl
+rm -rf /root
+mkdir -p /var/cache/root
+rsync -rPaEpl --mkpath /ctx/root /var/cache
+ln -s /var/cache/root /root
+mkdir -p /root/.local/bin /root/.config
+export PATH="$HOME/.local/bin:$PATH"
 mkdir -p /var/cache/{src,build,logs}
-kde-builder() {
-	pipenv run python /container-data/kde-builder/kde-builder "$@"
-}
-cd /container-data/kde-builder
-cp ../kde-builder.yaml "$HOME/.config/kde-builder.yaml"
-pipenv install --python /usr/bin/python3
-kde-builder --install-distro-packages plasma-bigscreen aura-browser plank-player
-cp /container-data/session.desktop /usr/share/wayland-sessions/default.desktop
+cd "$HOME"
+curl 'https://invent.kde.org/sdk/kde-builder/raw/master/scripts/initial_setup.sh?ref_type=heads' > initial_setup.sh
+{ yes || true ; } | bash initial_setup.sh
+kde-builder --install-distro-packages --prompt-answer y plasma-bigscreen aura-browser plank-player plasma-remotecontrollers
+cp /ctx/container-data/session.desktop /usr/share/wayland-sessions/default.desktop
 useradd -mU user
 cat << EOF > /etc/sddm.conf.d/autologin.conf
 [Autologin]
@@ -38,7 +37,24 @@ EOF
 # dnf5 -y install package
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
-
+FCAST_VERSION="$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/futo-org/fcast | grep "electron" | tail -n1 | cut -d/ -f3 | sed 's/^electron-v?//')"
+dnf5 -y install "https://dl.fcast.org/electron/$FCAST_VERSION/rpm/x64/fcast-receiver-$FCAST_VERSION-linux-x64.rpm"
+VERSION="$(git -c "versionsort.suffix=-" ls-remote --tags --sort='v:refname' https://github.com/shy1132/VacuumTube.git | tail -n1 | cut -d/ -f3)"
+wget --continue "https://github.com/shy1132/VacuumTube/releases/download/$VERSION/VacuumTube-x64.tar.gz" -O "/var/cache/VacuumTube-x64-$VERSION.tar.gz"
+mkdir -p /usr/lib/vacuum-tube
+tar -xvf "/var/cache/VacuumTube-x64-$VERSION.tar.gz" --strip-components 1 -C /usr/lib/vacuum-tube
+cat << EOF > /usr/bin/startvacuumtube
+#!/bin/sh
+/usr/lib/vacuumtube "\$@"
+EOF
+mkdir -p /usr/share/icons/hicolor/scalable/apps
+wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/assets/icon.svg" -O "/var/cache/vacuumtube-icon-$VERSION.svg" --continue
+wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/flatpak/rocks.shy.VacuumTube.metainfo.xml" -O "/var/cache/rocks.shy.VacuumTube-$VERSION.metainfo.xml" --continue
+wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/flatpak/rocks.shy.VacuumTube.desktop" -O "/var/cache/rocks.shy.VacuumTube-$VERSION.xml" --continue
+cp "/var/cache/rocks.shy.VacuumTube-$VERSION.metainfo.xml" /usr/share/metainfo/rocks.shy.VacuumTube.metainfo.xml
+cp "/var/cache/rocks.shy.VacuumTube-$VERSION.desktop" /usr/share/applications/rocks.shy.VacuumTube.desktop
+cp "/var/cache/vacuumtube-icon-$VERSION.svg" /usr/share/icons/hicolor/scalable/apps/rocks.shy.VacuumTube.svg
 #### Example for enabling a System Unit File
-
-systemctl enable podman.socket
+systemctl enable sddm
+#systemctl enable podman.socket
+rm -f /root
