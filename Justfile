@@ -221,6 +221,7 @@ rebuild-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_reb
 [group('Build Virtal Machine Image')]
 rebuild-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "iso" "disk_config/iso.toml")
 
+_run-vm-gui $target_image $tag $type $config:
 # Run a virtual machine with the specified image type and configuration
 _run-vm $target_image $tag $type $config:
     #!/usr/bin/bash

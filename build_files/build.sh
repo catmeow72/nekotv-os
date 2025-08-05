@@ -11,10 +11,9 @@ set -ouex pipefail
 
 # this installs a package from fedora repos
 dnf5 install -y git rsync sddm curl
-rm -rf /root
 mkdir -p /var/cache/root
 rsync -rPaEpl --mkpath /ctx/root /var/cache
-ln -s /var/cache/root /root
+ln -sf /var/cache/root /root
 mkdir -p /root/.local/bin /root/.config
 export PATH="$HOME/.local/bin:$PATH"
 mkdir -p /var/cache/{src,build,logs}
@@ -37,7 +36,7 @@ EOF
 # dnf5 -y install package
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
-FCAST_VERSION="$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/futo-org/fcast | grep "electron" | tail -n1 | cut -d/ -f3 | sed 's/^electron-v?//')"
+FCAST_VERSION="$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/futo-org/fcast | grep "electron" | tail -n1 | cut -d/ -f3 | sed 's/^electron-//' | sed 's/^v//')"
 dnf5 -y install "https://dl.fcast.org/electron/$FCAST_VERSION/rpm/x64/fcast-receiver-$FCAST_VERSION-linux-x64.rpm"
 VERSION="$(git -c "versionsort.suffix=-" ls-remote --tags --sort='v:refname' https://github.com/shy1132/VacuumTube.git | tail -n1 | cut -d/ -f3)"
 wget --continue "https://github.com/shy1132/VacuumTube/releases/download/$VERSION/VacuumTube-x64.tar.gz" -O "/var/cache/VacuumTube-x64-$VERSION.tar.gz"
@@ -50,11 +49,11 @@ EOF
 mkdir -p /usr/share/icons/hicolor/scalable/apps
 wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/assets/icon.svg" -O "/var/cache/vacuumtube-icon-$VERSION.svg" --continue
 wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/flatpak/rocks.shy.VacuumTube.metainfo.xml" -O "/var/cache/rocks.shy.VacuumTube-$VERSION.metainfo.xml" --continue
-wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/flatpak/rocks.shy.VacuumTube.desktop" -O "/var/cache/rocks.shy.VacuumTube-$VERSION.xml" --continue
+wget "https://github.com/shy1132/VacuumTube/blob/$VERSION/flatpak/rocks.shy.VacuumTube.desktop" -O "/var/cache/rocks.shy.VacuumTube-$VERSION.desktop" --continue
 cp "/var/cache/rocks.shy.VacuumTube-$VERSION.metainfo.xml" /usr/share/metainfo/rocks.shy.VacuumTube.metainfo.xml
 cp "/var/cache/rocks.shy.VacuumTube-$VERSION.desktop" /usr/share/applications/rocks.shy.VacuumTube.desktop
 cp "/var/cache/vacuumtube-icon-$VERSION.svg" /usr/share/icons/hicolor/scalable/apps/rocks.shy.VacuumTube.svg
 #### Example for enabling a System Unit File
 systemctl enable sddm
 #systemctl enable podman.socket
-rm -f /root
+ln -sf var/roothome /root
