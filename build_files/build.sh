@@ -72,4 +72,5 @@ cp "/var/cache/vacuumtube-icon-$VERSION.svg" /usr/share/icons/hicolor/scalable/a
 #### Example for enabling a System Unit File
 systemctl enable sddm
 #systemctl enable podman.socket
+rm -f /root
 ln -sf var/roothome /root
