@@ -92,10 +92,15 @@ jobs:
           KNOWN_HOSTS_DATA: ${{ secrets.RSYNC_SSH_KNOWN_HOSTS }}
         run: |
           umask 700
+          export _HOME="$HOME"
+          export HOME="$(mktemp -d)"
           echo $SSH_KEY > $HOME/.ssh-key.tmp
           mkdir -p $HOME/.ssh
           echo $KNOWN_HOSTS_DATA > $HOME/.ssh/known_hosts
           sudo apt-get update
           sudo apt-get install -y rsync
           rsync -rPe "ssh -i $HOME/.ssh-key.tmp" $SOURCE_DIR $SERVER
-          rm -f $HOME/.ssh-key.tmp
+          rm -f $HOME/.ssh-key
+          rm -r "$HOME"
+          export HOME="$_HOME"
+          unset _HOME
