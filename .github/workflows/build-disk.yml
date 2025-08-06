@@ -85,13 +85,14 @@ jobs:
       - name: Upload disk images and Checksum to custom server
         if: inputs.upload-rsync == true && github.event_name != 'pull_request'
         shell: bash
-        SOURCE_DIR: ${{ steps.build.outputs.output-directory }}
-        SERVER: ${{ secrets.RSYNC_SSH_URL }}
-        SSH_KEY: ${{ secrets.RSYNC_SSH_KEY }}
-      run: \
-        umask 600
-        echo $SSH_KEY > $HOME/.ssh-key.tmp
-        sudo apt-get update
-        sudo apt-get install -y rsync
-        rsync -rPe "ssh -i $HOME/.ssh-key.tmp" $SOURCE_DIR $SERVER
-        rm -f $HOME/.ssh-key.tmp
+        env:
+          SOURCE_DIR: ${{ steps.build.outputs.output-directory }}
+          SERVER: ${{ secrets.RSYNC_SSH_URL }}
+          SSH_KEY: ${{ secrets.RSYNC_SSH_KEY }}
+        run: |
+          umask 600
+          echo $SSH_KEY > $HOME/.ssh-key.tmp
+          sudo apt-get update
+          sudo apt-get install -y rsync
+          rsync -rPe "ssh -i $HOME/.ssh-key.tmp" $SOURCE_DIR $SERVER
+          rm -f $HOME/.ssh-key.tmp
