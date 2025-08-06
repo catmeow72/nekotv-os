@@ -81,7 +81,7 @@ jobs:
           image: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
           chown: ${{ env.USER_UID }}:${{ env.USER_GID }}
           types: ${{ matrix.disk-type }}
-          additional-args: --use-librepo=True
+          additional-args: --use-librepo=True --rootfs btrfs
       - name: Upload disk images and Checksum to custom server
         if: inputs.upload-rsync == true && github.event_name != 'pull_request'
         shell: bash
