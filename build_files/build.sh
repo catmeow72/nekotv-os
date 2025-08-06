@@ -29,6 +29,22 @@ Relogin=true
 Session=default
 User=user
 EOF
+FCAST_ARCH="build"
+VACUUMTUBE_ARCH="build"
+case "$(uname -m)" in
+	x86_64)
+		FCAST_ARCH="x64"
+		VACUUMTUBE_ARCH="arm64"
+		;;
+	aarch64)
+		FCAST_ARCH="arm64"
+		VACUUMTUBE_ARCH="arm64"
+		;;
+	*)
+		echo "Error: Unsupported architecture." >&2
+		exit 1
+		;;
+esac
 
 # Use a COPR Example:
 #
@@ -37,11 +53,11 @@ EOF
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
 FCAST_VERSION="$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/futo-org/fcast | grep "electron" | tail -n1 | cut -d/ -f3 | sed 's/^electron-//' | sed 's/^v//')"
-dnf5 -y install "https://dl.fcast.org/electron/$FCAST_VERSION/rpm/x64/fcast-receiver-$FCAST_VERSION-linux-x64.rpm"
+dnf5 -y install "https://dl.fcast.org/electron/$FCAST_VERSION/rpm/$FCAST_ARCH/fcast-receiver-$FCAST_VERSION-linux-$FCAST_ARCH.rpm"
 VERSION="$(git -c "versionsort.suffix=-" ls-remote --tags --sort='v:refname' https://github.com/shy1132/VacuumTube.git | tail -n1 | cut -d/ -f3)"
-wget --continue "https://github.com/shy1132/VacuumTube/releases/download/$VERSION/VacuumTube-x64.tar.gz" -O "/var/cache/VacuumTube-x64-$VERSION.tar.gz"
+wget --continue "https://github.com/shy1132/VacuumTube/releases/download/$VERSION/VacuumTube-$VACUUMTUBE_ARCH.tar.gz" -O "/var/cache/VacuumTube-$VACUUMTUBE_ARCH-$VERSION.tar.gz"
 mkdir -p /usr/lib/vacuum-tube
-tar -xvf "/var/cache/VacuumTube-x64-$VERSION.tar.gz" --strip-components 1 -C /usr/lib/vacuum-tube
+tar -xvf "/var/cache/VacuumTube-$VACUUMTUBE_ARCH-$VERSION.tar.gz" --strip-components 1 -C /usr/lib/vacuum-tube
 cat << EOF > /usr/bin/startvacuumtube
 #!/bin/sh
 /usr/lib/vacuumtube "\$@"
