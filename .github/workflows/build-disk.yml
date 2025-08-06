@@ -89,9 +89,12 @@ jobs:
           SOURCE_DIR: ${{ steps.build.outputs.output-directory }}
           SERVER: ${{ secrets.RSYNC_SSH_URL }}
           SSH_KEY: ${{ secrets.RSYNC_SSH_KEY }}
+          KNOWN_HOSTS_DATA: ${{ secrets.RSYNC_SSH_KNOWN_HOSTS }}
         run: |
-          umask 600
+          umask 700
           echo $SSH_KEY > $HOME/.ssh-key.tmp
+          mkdir -p $HOME/.ssh
+          echo $KNOWN_HOSTS_DATA > $HOME/.ssh/known_hosts
           sudo apt-get update
           sudo apt-get install -y rsync
           rsync -rPe "ssh -i $HOME/.ssh-key.tmp" $SOURCE_DIR $SERVER
