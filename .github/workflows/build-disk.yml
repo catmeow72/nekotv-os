@@ -82,18 +82,18 @@ jobs:
           chown: ${{ env.USER_UID }}:${{ env.USER_GID }}
           types: ${{ matrix.disk-type }}
           additional-args: --use-librepo=True --rootfs btrfs
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.RSYNC_SSH_KEY }}
+          known_hosts: ${{ secrets.RSYNC_SSH_KNOWN_HOSTS }}
       - name: Upload disk images and Checksum to custom server
         if: github.event_name != 'pull_request'
         shell: bash
         env:
           SOURCE_DIR: ${{ steps.build.outputs.output-directory }}
           SERVER: ${{ secrets.RSYNC_SSH_URL }}
-          SSH_KEY: ${{ secrets.RSYNC_SSH_KEY }}
-          KNOWN_HOSTS_DATA: ${{ secrets.RSYNC_SSH_KNOWN_HOSTS }}
         run: |
-          umask 700
-          echo $SSH_KEY > .ssh-key.tmp
           sudo apt-get update
           sudo apt-get install -y rsync
-          rsync -rPe "ssh -i .ssh-key.tmp -o KnownHostsCommand='echo $KNOWN_HOSTS_DATA'" $SOURCE_DIR $SERVER
-          rm -f .ssh-key
+          rsync -rPe ssh $SOURCE_DIR $SERVER
