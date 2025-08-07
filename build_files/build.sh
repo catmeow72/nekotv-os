@@ -11,8 +11,9 @@ set -ouex pipefail
 
 # this installs a package from fedora repos
 dnf5 install -y git rsync sddm curl
-mkdir -p /var/cache/root
-rsync -rPaEpl --mkpath /ctx/root /var/cache
+#mkdir -p /var/cache/root
+rsync -rPaEpl --mkpath --chown $(id -u):$(id -g) /etc/skel /var/cache/root
+#rsync -rPaEpl --mkpath /ctx/root /var/cache
 ln -sf /var/cache/root /root
 mkdir -p /root/.local/bin /root/.config
 export PATH="$HOME/.local/bin:$PATH"
