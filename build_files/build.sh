@@ -21,7 +21,7 @@ mkdir -p /var/cache/{src,build,logs}
 cd "$HOME"
 curl 'https://invent.kde.org/sdk/kde-builder/raw/master/scripts/initial_setup.sh?ref_type=heads' > initial_setup.sh
 { yes || true ; } | bash initial_setup.sh
-mv /ctx/container-data/kde-builder.yaml "$HOME/.config/kde-builder.yaml"
+cp /ctx/container-data/kde-builder.yaml "$HOME/.config/kde-builder.yaml"
 kde-builder --install-distro-packages --prompt-answer y plasma-bigscreen aura-browser plank-player plasma-remotecontrollers
 cp /ctx/container-data/session.desktop /usr/share/wayland-sessions/default.desktop
 useradd -mU user
