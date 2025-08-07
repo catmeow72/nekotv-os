@@ -23,7 +23,7 @@ curl 'https://invent.kde.org/sdk/kde-builder/raw/master/scripts/initial_setup.sh
 { yes || true ; } | bash initial_setup.sh
 cp /ctx/container-data/kde-builder.yaml "$HOME/.config/kde-builder.yaml"
 kde-builder --install-distro-packages --prompt-answer y
-kde-builder plasma-bigscreen aura-browser plank-player plasma-remotecontrollers discover konsole
+kde-builder plasma-bigscreen aura-browser plank-player plasma-remotecontrollers discover konsole --make-options "-j$(nproc)"
 cp /ctx/container-data/session.desktop /usr/share/wayland-sessions/default.desktop
 useradd -mU user
 cat << EOF > /etc/sddm.conf.d/autologin.conf
