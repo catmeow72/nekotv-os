@@ -74,3 +74,4 @@ systemctl enable sddm
 #systemctl enable podman.socket
 rm -f /root
 ln -sf var/roothome /root
+systemctl enable getty@ttyS0.service
