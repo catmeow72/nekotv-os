@@ -1,7 +1,7 @@
 export image_name := env("IMAGE_NAME", "nekotv-os") # output image name, usually same as repo name, change as needed
 export registry := env("REGISTRY", "localhost")
 export default_tag := env("DEFAULT_TAG", "latest")
-export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest")
+export bib_image := env("BIB_IMAGE", "ghcr.io/lorbuschris/bootc-image-builder:20250608")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
