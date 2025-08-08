@@ -37,7 +37,7 @@ VACUUMTUBE_ARCH="build"
 case "$(uname -m)" in
 	x86_64)
 		FCAST_ARCH="x64"
-		VACUUMTUBE_ARCH="arm64"
+		VACUUMTUBE_ARCH="x64"
 		;;
 	aarch64)
 		FCAST_ARCH="arm64"
