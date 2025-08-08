@@ -76,5 +76,5 @@ cp "/var/cache/vacuumtube-icon-$VERSION.svg" /usr/share/icons/hicolor/scalable/a
 systemctl enable sddm
 #systemctl enable podman.socket
 rm -f /root
-ln -sf var/roothome /root
+ln -sfT var/roothome /root
 systemctl enable getty@ttyS0.service
