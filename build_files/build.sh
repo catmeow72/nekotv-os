@@ -24,12 +24,11 @@ curl 'https://invent.kde.org/sdk/kde-builder/raw/master/scripts/initial_setup.sh
 cp /ctx/container-data/kde-builder.yaml "$HOME/.config/kde-builder.yaml"
 kde-builder --install-distro-packages --prompt-answer y
 kde-builder plasma-bigscreen aura-browser plank-player plasma-remotecontrollers discover konsole --make-options "-j$(nproc)"
-cp /ctx/container-data/session.desktop /usr/share/wayland-sessions/default.desktop
 useradd -mU user
 cat << EOF > /etc/sddm.conf.d/autologin.conf
 [Autologin]
 Relogin=true
-Session=default
+Session=plasma-bigscreen-wayland
 User=user
 EOF
 FCAST_ARCH="build"
@@ -77,4 +76,9 @@ systemctl enable sddm
 #systemctl enable podman.socket
 rm -f /root
 ln -sfT var/roothome /root
+rm -rf /var/home/user
+cp /ctx/container-data/setup-home.service /usr/lib/systemd/system/setup-home.service
+cp /ctx/container-data/setup-home.sh /usr/sbin/setup-home.sh
+chmod a+x /usr/sbin/setup-home.sh
+systemctl enable setup-home.service
 systemctl enable getty@ttyS0.service

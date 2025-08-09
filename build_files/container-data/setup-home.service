@@ -1,0 +1,9 @@
+[Unit]
+Description=Initialize user home directory if needed
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/setup-home.sh
+
+[Install]
+WantedBy=multi-user.target
